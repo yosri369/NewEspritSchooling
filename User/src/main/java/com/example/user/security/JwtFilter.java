@@ -31,8 +31,16 @@ public class JwtFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             if (jwtUtils.validate(token)) {
-                String username = jwtUtils.extractUsername(token);
-                UserDetails ud = userDetailsService.loadUserByUsername(username);
+                String username = jwtUtils.extractRole(token);
+                String role = jwtUtils.extractRole(token);
+
+                // Crée manuellement UserDetails avec rôle depuis le token
+                UserDetails ud = org.springframework.security.core.userdetails.User
+                        .withUsername(username)
+                        .password("") // le mot de passe n’est pas utilisé ici
+                        .authorities("ROLE_" + role)
+                        .build();
+
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(ud, null, ud.getAuthorities());
                 auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
@@ -41,4 +49,5 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         chain.doFilter(req, res);
     }
+
 }
