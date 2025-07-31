@@ -38,7 +38,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/pending-students").permitAll()  // Allow public POST to create pending student
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers(" /api/test/**").hasRole("STUDENT")
+                        .requestMatchers("/api/test/**").hasRole("STUDENT")
                         .requestMatchers("/api/pending-students/**").hasRole("ADMIN")          // view/validate/reject pending students
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
