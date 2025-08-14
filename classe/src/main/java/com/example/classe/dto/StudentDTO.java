@@ -1,21 +1,16 @@
-package com.example.user.entity;
+package com.example.classe.dto;
 
-import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
 
-@Entity
 @Data
-public class Student {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class StudentDTO {
     private Long id;
     private String registrationNumber;
     private LocalDate enrollmentDate;
     private String status;
     private int academicYear; // <-- add this
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+
+    private UserDTO user;  // nested DTO for user info
 }

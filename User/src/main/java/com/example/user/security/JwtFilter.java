@@ -31,8 +31,13 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // 1. Get token from cookie "accessToken"
-        String token = getJwtFromCookies(request);
+        // Try Authorization header first
+        String token = getJwtFromAuthorizationHeader(request);
+
+        // If no header, try cookie
+        if (token == null) {
+            token = getJwtFromCookies(request);
+        }
 
         if (token != null && jwtUtils.validate(token)) {
             // 2. Extract username from token
@@ -54,6 +59,14 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private String getJwtFromAuthorizationHeader(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 
     private String getJwtFromCookies(HttpServletRequest request) {
