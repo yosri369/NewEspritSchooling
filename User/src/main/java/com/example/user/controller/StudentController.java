@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "http://localhost:3000")  // your frontend dev URL
+//@CrossOrigin(origins = "http://localhost:3000")  // your frontend dev URL
 @RestController
 @RequestMapping("/api/students")
 public class StudentController {
@@ -26,6 +26,7 @@ public class StudentController {
             dto.setId(student.getId());
             dto.setRegistrationNumber(student.getRegistrationNumber());
             dto.setEnrollmentDate(student.getEnrollmentDate());
+            dto.setAcademicYear(student.getAcademicYear());
             dto.setStatus(student.getStatus());
 
             if (student.getUser() != null) {
@@ -48,6 +49,7 @@ public class StudentController {
             dto.setId(student.getId());
             dto.setRegistrationNumber(student.getRegistrationNumber());
             dto.setEnrollmentDate(student.getEnrollmentDate());
+            dto.setAcademicYear(student.getAcademicYear()); // <<< add this
             dto.setStatus(student.getStatus());
 
             if (student.getUser() != null) {

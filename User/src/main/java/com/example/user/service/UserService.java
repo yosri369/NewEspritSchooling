@@ -55,6 +55,7 @@ public class UserService {
         student.setUser(user);  // one-to-one link
         student.setRegistrationNumber(pendingStudent.getRegistrationNumber());
         student.setEnrollmentDate(pendingStudent.getEnrollmentDate());
+        student.setAcademicYear(Integer.parseInt(pendingStudent.getAcademicYear()));
         student.setStatus("active");
 
         // Link user to student profile

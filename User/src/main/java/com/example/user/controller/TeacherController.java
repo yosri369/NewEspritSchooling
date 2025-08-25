@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "http://localhost:3000")  // your frontend dev URL
+//@CrossOrigin(origins = "http://localhost:3000")  // your frontend dev URL
 @RestController
 @RequestMapping("/api/teachers")
 @RequiredArgsConstructor

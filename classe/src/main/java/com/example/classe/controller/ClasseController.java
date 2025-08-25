@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/classes")
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RequiredArgsConstructor
 public class ClasseController {
     private final ClasseService service;
@@ -69,6 +69,12 @@ public class ClasseController {
     @PreAuthorize("hasRole('ADMIN')")
     public void removeTeacher(@PathVariable Long classId, @PathVariable Long teacherId) {
         service.removeTeacherFromClass(classId, teacherId);
+    }
+
+    @PostMapping("/auto-assign/{academicYear}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void autoAssign(@PathVariable int academicYear) {
+        service.autoAssignStudentsToClasses(academicYear);
     }
 
 }

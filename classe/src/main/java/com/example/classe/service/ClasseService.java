@@ -51,6 +51,35 @@ public class ClasseService {
         dto.setName(c.getName());
         dto.setAcademicYear(c.getAcademicYear());
         dto.setSpecialization(c.getSpecialization());
+
+        // Safely fetch student info from User microservice
+        List<StudentDTO> students = c.getStudentIds().stream()
+                .map(id -> {
+                    try {
+                        return userClient.getStudentById(id);
+                    } catch (Exception e) {
+                        System.out.println("Warning: student not found for id " + id);
+                        return null; // skip if student not found
+                    }
+                })
+                .filter(s -> s != null) // remove nulls
+                .collect(Collectors.toList());
+        dto.setStudents(students);
+
+        // Safely fetch teacher info
+        List<TeacherDTO> teachers = c.getTeacherIds().stream()
+                .map(id -> {
+                    try {
+                        return userClient.getTeacherById(id);
+                    } catch (Exception e) {
+                        System.out.println("Warning: teacher not found for id " + id);
+                        return null;
+                    }
+                })
+                .filter(t -> t != null)
+                .collect(Collectors.toList());
+        dto.setTeachers(teachers);
+
         return dto;
     }
 
@@ -99,13 +128,20 @@ public class ClasseService {
     }
 
     public void autoAssignStudentsToClasses(int academicYear) {
+        // Step 1: Get all students for this academic year
         List<StudentDTO> students = userClient.getStudentsByAcademicYear(academicYear);
-        List<Classe> classes = repository.findByAcademicYear(academicYear);
+        if (students.isEmpty()) return;
 
+        // Step 2: Get all classes for this academic year
+        List<Classe> classes = repository.findByAcademicYear(academicYear);
         if (classes.isEmpty()) throw new RuntimeException("No classes available for this year");
 
         int classIndex = 0;
         for (StudentDTO student : students) {
+            boolean alreadyAssigned = classes.stream()
+                    .anyMatch(c -> c.getStudentIds().contains(student.getId()));
+            if (alreadyAssigned) continue; // Skip student already assigned
+
             boolean assigned = false;
             while (!assigned) {
                 Classe currentClass = classes.get(classIndex);
@@ -122,5 +158,6 @@ public class ClasseService {
             }
         }
     }
+
 
 }

@@ -6,26 +6,46 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: true
-      websocket:
-        enabled: true
+          enabled: true  # automatically creates routes for registered services
       routes:
+        # USER SERVICE ROUTES
+        - id: user-service-auth
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/auth/**
 
+        - id: user-service-students
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/students/**
+
+        - id: user-service-teachers
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/teachers/**
+
+        - id: user-service-pending-students
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/pending-students/**
+
+        - id: class-service
+          uri: lb://CLASS-SERVICE
+          predicates:
+            - Path=/api/classes/**
 
       globalcors:
         cors-configurations:
           '[/**]':
-            allowed-origins:
-              - "http://localhost:4200" # Allow requests from Angular app
-              - "http://localhost:*"  # For WebSocket connections
-
-            allowed-methods:
+            allowedOrigins:
+              - "http://localhost:3000"   # Next.js frontend
+            allowedMethods:
               - GET
               - POST
               - PUT
+              - PATCH
               - DELETE
               - OPTIONS
             allowed-headers: "*"
             allow-credentials: true
-            max-age: 3600 # Cache preflight response for 1 hour
-
+            max-age: 3600
